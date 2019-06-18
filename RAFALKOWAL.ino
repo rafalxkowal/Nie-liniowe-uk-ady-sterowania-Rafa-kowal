@@ -26,12 +26,22 @@
 #define Y_MAX_PIN          15
 #define Z_MIN_PIN          18
 #define Z_MAX_PIN          19
-
-
+// zmienne
+String msg;
+int kroki_x=0;
+int kroki_y=0;
+int kroki_z=0;
 int i=0;
 int x=0;
+
+int kier_x=0;
+int kier_y=0;
+int kier_z=0;
 void setup() {
-  // put your setup code here, to run once:
+  
+  
+// put your setup code here, to run once:
+
 Serial.begin(115200);
 pinMode(X_ENABLE_PIN, OUTPUT);
 digitalWrite (X_ENABLE_PIN, LOW);
@@ -59,43 +69,38 @@ pinMode(Z_MAX_PIN, INPUT_PULLUP);
 
 
 
+  
+  
+
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-  ///////////////////////////////////////// INACZEJ TRZEBA ZROBIC XD
+  /*//////////////////////////////////////// INACZEJ TRZEBA ZROBIC XD
 if(digitalRead(X_MAX_PIN))
 {
 digitalWrite (X_STEP_PIN, LOW);
-  
+
 }
 if(digitalRead(Y_MAX_PIN))
 {
 digitalWrite (Y_STEP_PIN, LOW);
-  
+
 }
 
 if(digitalRead(Z_MAX_PIN))
 {
 digitalWrite (Z_STEP_PIN, LOW);
-  
+
 }
+*/
 
-///////////////////////////
 
-   digitalWrite (X_STEP_PIN, HIGH);
-   digitalWrite (Y_STEP_PIN, HIGH);
-   digitalWrite (Z_STEP_PIN, HIGH);
-   delay(4);
-   digitalWrite (X_STEP_PIN, LOW);
-   digitalWrite (Y_STEP_PIN, LOW);
-   digitalWrite (Z_STEP_PIN, LOW);
-    delay(4);
-    i++;
-    Serial.println(digitalRead(X_MAX_PIN));
-    Serial.println(digitalRead(Y_MAX_PIN));
-    Serial.println(digitalRead(Z_MAX_PIN));
     
+
+
+   
+/*  Ruch w doł i w gore na przemian
     if(i==200)
     {
 
@@ -111,5 +116,73 @@ digitalWrite (Z_STEP_PIN, LOW);
     digitalWrite (Z_DIR_PIN, HIGH);
     i=0;
     }
+
+
+    */
+
+
+// kominikacja //sprawdzenie czy cos jest w buforze portu szeregowego
     
+  while(Serial.available())
+  {
+  msg=Serial.readStringUntil('\n');
+  sscanf(msg.c_str(),"x %d y %d z %d", &kroki_x, &kroki_y, &kroki_z);
+  Serial.println(kroki_x);
+  Serial.println(kroki_y);
+  Serial.println(kroki_z);
+  
+  //Sprawdzanie kierunku 
+kier_x=kroki_x<0;
+digitalWrite (X_DIR_PIN, kier_x);
+kroki_x=abs(kroki_x);
+
+kier_y=kroki_y<0;
+digitalWrite (Y_DIR_PIN, kier_y);
+kroki_y=abs(kroki_y);
+
+kier_z=kroki_z<0;
+digitalWrite (Z_DIR_PIN, kier_z);
+kroki_z=abs(kroki_z);
+  
+  }
+
+
+
+
+
+
+//Wykonywanie krokow plus zabezpieczenie
+if(digitalRead(X_MAX_PIN)==0 && kroki_x>0)
+  {
+  digitalWrite(X_STEP_PIN, HIGH);
+  kroki_x--;
+  }
+  delay(2);
+  digitalWrite(X_STEP_PIN, LOW);
+  delay(2);
+ 
+if(digitalRead(Y_MAX_PIN)==0 && kroki_y>0)
+  {
+  digitalWrite(Y_STEP_PIN, HIGH);
+  kroki_y--;
+  }
+  delay(2);
+  digitalWrite(Y_STEP_PIN, LOW);
+  delay(2);
+  
+  
+if(digitalRead(Z_MAX_PIN)==0 && kroki_z>0)
+  {
+  digitalWrite(Z_STEP_PIN, HIGH);
+  kroki_z--;
+  }
+  delay(2);
+  digitalWrite(Z_STEP_PIN, LOW);
+  delay(2);
+  
+  
+
+
+  
+
 }
