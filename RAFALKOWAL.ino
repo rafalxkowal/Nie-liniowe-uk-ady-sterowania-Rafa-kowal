@@ -152,31 +152,34 @@ kroki_z=abs(kroki_z);
 
 
 //Wykonywanie krokow plus zabezpieczenie
-if(digitalRead(X_MAX_PIN)==0 && kroki_x>0)
+if(digitalRead((X_MAX_PIN)==0 || kier_x==1) && kroki_x>0)
   {
   digitalWrite(X_STEP_PIN, HIGH);
   kroki_x--;
   }
-  delay(2);
-  digitalWrite(X_STEP_PIN, LOW);
-  delay(2);
+  
+  
+
  
-if(digitalRead(Y_MAX_PIN)==0 && kroki_y>0)
+if(digitalRead((Y_MAX_PIN)==0 || kier_y==1) && kroki_y>0)
   {
   digitalWrite(Y_STEP_PIN, HIGH);
   kroki_y--;
   }
-  delay(2);
-  digitalWrite(Y_STEP_PIN, LOW);
-  delay(2);
+
+ 
+
   
   
-if(digitalRead(Z_MAX_PIN)==0 && kroki_z>0)
+if(digitalRead((Z_MAX_PIN)==0 || kier_z==1) && kroki_z>0)
   {
   digitalWrite(Z_STEP_PIN, HIGH);
   kroki_z--;
-  }
+  } 
+  
   delay(2);
+  digitalWrite(X_STEP_PIN, LOW);
+  digitalWrite(Y_STEP_PIN, LOW);
   digitalWrite(Z_STEP_PIN, LOW);
   delay(2);
   
